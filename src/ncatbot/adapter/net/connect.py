@@ -11,6 +11,7 @@ _log = get_log()
 class Websocket:
     def __init__(self, client):
         self.client = client
+        self._initialized = False
         self._websocket_uri = f"{config.ws_uri}/event"
         self._header = (
             {
@@ -38,8 +39,9 @@ class Websocket:
         elif message_post_type == "request":
             asyncio.create_task(self.client.handle_request_event(message))
         elif message_post_type == "meta_event":
-            if message["meta_event_type"] == "lifecycle":
+            if not self._initialized and message["meta_event_type"] == "lifecycle":
                 asyncio.create_task(self.client.handle_startup_event())
+                self._initialized = True
                 _log.info(f"机器人 {message.get('self_id')} 成功启动")
             else:
                 _log.debug(message)
