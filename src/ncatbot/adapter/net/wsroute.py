@@ -29,8 +29,8 @@ async def check_websocket(uri):
         ):
             _log.debug(f"WebSocket {uri} 可用.")
             return True
-    except Exception:
-        # _log.error(f"检查 WebSocket 端口时发生错误: {e}")
+    except Exception as e:
+        _log.error(f"检查 WebSocket 端口时发生错误: {e}")
         return False
 
 
